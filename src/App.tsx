@@ -58,12 +58,13 @@ function App() {
     setReloadUsers(!reloadUsers);
   };
 
-  const handleCountryOrder = () => {
-    const newOrder = users?.sort(
-      (a, b) => b.location.country - a.location.country
+  const handleInputFilter = (e) => {
+    const value = e.target.value;
+
+    const countries = users?.filter(
+      (item) => item.location.country.toLowerCase() == value
     );
-    setUsers(newOrder);
-    console.log(users);
+    console.log(countries);
   };
 
   return (
@@ -71,9 +72,10 @@ function App() {
       <h1>Prueba técnica</h1>
       <div className="controls">
         <button onClick={handleColor}>Colorear filas</button>
-        <button onClick={handleCountryOrder}>Ordenar por país</button>
+        <button>Ordenar por país</button>
         <button onClick={() => refreshUsers()}>Resetear estado</button>
         <input
+          onChange={handleInputFilter}
           name="country-filter"
           type="text"
           placeholder="Filtrar por país"
