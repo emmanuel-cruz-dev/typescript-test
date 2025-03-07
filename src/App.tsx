@@ -70,6 +70,7 @@ function App() {
   return (
     <main className="App">
       <h1>Prueba técnica</h1>
+      <p>Agregar Sonner para notificaciones toast</p>
       <div className="controls">
         <button onClick={handleColor}>Colorear filas</button>
         <button>Ordenar por país</button>
