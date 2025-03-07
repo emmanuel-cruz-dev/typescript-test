@@ -1,0 +1,21 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.fila:nth-child(even) {
+  background-color: #7b7b7b;
+}
+
+.fila:nth-child(odd) {
+  background-color: #484848;
+}
