@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-
-interface UserLocation {
-  country: string;
-}
+import { UserLocation } from "./types/types";
 
 interface UserPicture {
   large: string;
