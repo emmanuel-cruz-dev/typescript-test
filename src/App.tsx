@@ -1,32 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import { UserLocation } from "./types/types";
-
-interface UserPicture {
-  large: string;
-  medium: string;
-  thumbnail: string;
-}
-
-interface UserName {
-  title: string;
-  first: string;
-  last: string;
-}
-
-interface UserId {
-  name: string;
-  value: string;
-}
-
-interface User {
-  cell: string;
-  email: string;
-  id: UserId;
-  name: UserName;
-  picture: UserPicture;
-  location: UserLocation;
-}
+import { User } from "./types/types";
 
 function App() {
   const [users, setUsers] = useState<User[] | undefined>(undefined);
@@ -55,7 +29,7 @@ function App() {
     setReloadUsers(!reloadUsers);
   };
 
-  const handleInputFilter = (e) => {
+  const handleInputFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
     const countries = users?.filter(
