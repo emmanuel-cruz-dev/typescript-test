@@ -73,6 +73,7 @@ function App() {
                     <img
                       src={user.picture.thumbnail}
                       alt={`${user.name.title} ${user.name.first} ${user.name.last}`}
+                      title={`${user.name.first} ${user.name.last}`}
                     />
                   </td>
                   <td>{user.name.first}</td>
