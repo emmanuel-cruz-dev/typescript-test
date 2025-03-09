@@ -1,13 +1,13 @@
 # Prueba técnica con TypeScript y React
 
-Esto es una prueba técnica para una empresa europea.
+Prueba técnica para una empresa europea.
 
 El objetivo de esta prueba técnica es crear una aplicación similar a la que se proporciona en este enlace: https://midu-react-11.surge.sh/.
 
 Para lograr esto, debe usar la siguiente API:
 https://randomuser.me/.
 
-Los pasos a seguir:
+Pasos a seguir:
 
 - [x] Fetch 100 rows of data using the API.
 - [x] Display the data in a table format, similar to the example.
