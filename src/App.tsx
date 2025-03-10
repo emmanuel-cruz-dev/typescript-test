@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { User } from "./types/types";
 
@@ -9,6 +9,7 @@ function App() {
   const [initialState, setInitialState] = useState<User[] | undefined>(
     undefined
   );
+  const clicked = useRef(false);
 
   useEffect(() => {
     fetch("https://randomuser.me/api/?results=10")
@@ -45,13 +46,29 @@ function App() {
     }
   };
 
+  const handleCountryOrder = () => {
+    if (clicked.current === false) {
+      const rankedCountries = [...(users ?? [])].sort((a, b) =>
+        a.location.country.localeCompare(b.location.country)
+      );
+      setUsers(rankedCountries);
+      // console.log(users);
+      clicked.current = true;
+    } else {
+      setUsers(initialState);
+      clicked.current = false;
+    }
+  };
+
   return (
     <main className="App">
       <h1>Prueba técnica</h1>
       <p>Agregar Sonner para notificaciones toast</p>
       <div className="controls">
         <button onClick={handleColor}>Colorear filas</button>
-        <button>Ordenar por país</button>
+        <button onClick={handleCountryOrder}>
+          {clicked.current ? "No ordenar por país" : "Ordenar por país"}
+        </button>
         <button onClick={() => refreshUsers()}>Resetear estado</button>
         <input
           onChange={handleInputFilter}
