@@ -6,6 +6,9 @@ function App() {
   const [users, setUsers] = useState<User[] | undefined>(undefined);
   const [rowColors, setRowColors] = useState(false);
   const [reloadUsers, setReloadUsers] = useState(false);
+  const [initialState, setInitialState] = useState<User[] | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     fetch("https://randomuser.me/api/?results=10")
@@ -13,6 +16,7 @@ function App() {
       .then((data) => {
         // console.log(data.results);
         setUsers(data.results);
+        setInitialState(data.results);
       });
   }, [reloadUsers]);
 
@@ -30,12 +34,15 @@ function App() {
   };
 
   const handleInputFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    const countries = users?.filter(
-      (item) => item.location.country.toLowerCase() == value
-    );
-    console.log(countries);
+    const value = e.target.value.toLowerCase();
+    if (!value) {
+      setUsers(initialState);
+    } else {
+      const filteredUsers = users?.filter((item) =>
+        item.location.country.toLowerCase().includes(value)
+      );
+      setUsers(filteredUsers ?? []);
+    }
   };
 
   return (
