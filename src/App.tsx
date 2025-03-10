@@ -12,12 +12,15 @@ function App() {
   const clicked = useRef(false);
 
   useEffect(() => {
-    fetch("https://randomuser.me/api/?results=10")
+    fetch("https://randomuser.me/api/?results=100")
       .then((res) => res.json())
       .then((data) => {
         // console.log(data.results);
         setUsers(data.results);
         setInitialState(data.results);
+      })
+      .catch((err) => {
+        console.error(err);
       });
   }, [reloadUsers]);
 
