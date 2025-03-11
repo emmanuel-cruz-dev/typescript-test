@@ -3,21 +3,14 @@ import "./App.css";
 import { SortBy, User } from "./types/types";
 import UsersList from "./components/UsersList";
 import { userService } from "./services/userService";
+import handleColor from "./utils/handleColor";
+import handleDeleteUser from "./utils/handleDeleteUser";
 
 function App() {
   const { users, setUsers, originalUsers } = userService();
   const [showColors, setShowColors] = useState(false);
   const [sorting, setSorting] = useState<SortBy>(SortBy.NONE);
   const [filterCountry, setFilterCountry] = useState<string | null>(null);
-
-  const handleColor = () => {
-    setShowColors(!showColors);
-  };
-
-  const handleDeleteUser = (index: string) => {
-    const newUsers = users?.filter((item) => item.cell !== index);
-    setUsers(newUsers);
-  };
 
   const handleReset = () => {
     setUsers(originalUsers.current);
@@ -63,7 +56,9 @@ function App() {
       <h1>Prueba técnica</h1>
       <p>Agregar Sonner para notificaciones toast</p>
       <header className="controls">
-        <button onClick={handleColor}>Colorear filas</button>
+        <button onClick={() => handleColor(setShowColors, showColors)}>
+          Colorear filas
+        </button>
         <button onClick={handleCountryOrder}>
           {sorting === SortBy.COUNTRY
             ? "No ordenar por país"
@@ -83,7 +78,7 @@ function App() {
       <main>
         <UsersList
           changeSorting={handleChangeSort}
-          deleteUser={handleDeleteUser}
+          deleteUser={(index) => handleDeleteUser(users, setUsers, index)}
           showColors={showColors}
           users={sortedUsers}
         />
