@@ -1,26 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import "./App.css";
 import { SortBy, User } from "./types/types";
 import UsersList from "./components/UsersList";
+import { userService } from "./services/userService";
 
 function App() {
-  const [users, setUsers] = useState<User[]>([]);
-  const originalUsers = useRef<User[]>([]);
+  const { users, setUsers, originalUsers } = userService();
   const [showColors, setShowColors] = useState(false);
   const [sorting, setSorting] = useState<SortBy>(SortBy.NONE);
   const [filterCountry, setFilterCountry] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch("https://randomuser.me/api/?results=100")
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data.results);
-        originalUsers.current = data.results;
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
 
   const handleColor = () => {
     setShowColors(!showColors);
@@ -54,7 +42,7 @@ function App() {
   const sortedUsers = useMemo(() => {
     if (sorting === SortBy.NONE) return filteredUsers;
 
-    const compareProperties: Record<string, (user: User) => any> = {
+    const compareProperties: Record<string, (user: User) => string> = {
       [SortBy.COUNTRY]: (user) => user.location.country,
       [SortBy.NAME]: (user) => user.name.first,
       [SortBy.LAST]: (user) => user.name.last,
