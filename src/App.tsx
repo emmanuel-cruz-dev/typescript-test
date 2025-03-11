@@ -1,16 +1,35 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import { SortBy, User } from "./types/types";
 import UsersList from "./components/UsersList";
-import { userService } from "./services/userService";
-import handleColor from "./utils/handleColor";
-import handleDeleteUser from "./utils/handleDeleteUser";
 
 function App() {
-  const { users, setUsers, originalUsers } = userService();
+  const [users, setUsers] = useState<User[]>([]);
+  const originalUsers = useRef<User[]>([]);
   const [showColors, setShowColors] = useState(false);
   const [sorting, setSorting] = useState<SortBy>(SortBy.NONE);
   const [filterCountry, setFilterCountry] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("https://randomuser.me/api/?results=100")
+      .then((res) => res.json())
+      .then((data) => {
+        setUsers(data.results);
+        originalUsers.current = data.results;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  const handleColor = () => {
+    setShowColors(!showColors);
+  };
+
+  const handleDeleteUser = (index: string) => {
+    const newUsers = users?.filter((item) => item.cell !== index);
+    setUsers(newUsers);
+  };
 
   const handleReset = () => {
     setUsers(originalUsers.current);
@@ -56,9 +75,7 @@ function App() {
       <h1>Prueba técnica</h1>
       <p>Agregar Sonner para notificaciones toast</p>
       <header className="controls">
-        <button onClick={() => handleColor(setShowColors, showColors)}>
-          Colorear filas
-        </button>
+        <button onClick={handleColor}>Colorear filas</button>
         <button onClick={handleCountryOrder}>
           {sorting === SortBy.COUNTRY
             ? "No ordenar por país"
@@ -78,7 +95,7 @@ function App() {
       <main>
         <UsersList
           changeSorting={handleChangeSort}
-          deleteUser={(index) => handleDeleteUser(users, setUsers, index)}
+          deleteUser={handleDeleteUser}
           showColors={showColors}
           users={sortedUsers}
         />
