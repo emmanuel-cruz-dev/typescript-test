@@ -13,9 +13,27 @@ function UsersList({ changeSorting, deleteUser, showColors, users }: Props) {
       <thead>
         <tr>
           <th>Foto</th>
-          <th onClick={() => changeSorting(SortBy.NAME)}>First name</th>
-          <th onClick={() => changeSorting(SortBy.LAST)}>Last name</th>
-          <th onClick={() => changeSorting(SortBy.COUNTRY)}>País</th>
+          <th
+            style={{ cursor: "crosshair" }}
+            onClick={() => changeSorting(SortBy.NAME)}
+            title="Ordenar por Nombre"
+          >
+            Nombre
+          </th>
+          <th
+            style={{ cursor: "crosshair" }}
+            onClick={() => changeSorting(SortBy.LAST)}
+            title="Ordenar por Apellido"
+          >
+            Apellido
+          </th>
+          <th
+            style={{ cursor: "crosshair" }}
+            onClick={() => changeSorting(SortBy.COUNTRY)}
+            title="Ordenar por País"
+          >
+            País
+          </th>
           <th>Acciones</th>
         </tr>
       </thead>

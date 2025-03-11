@@ -42,7 +42,6 @@ function App() {
   };
 
   const filteredUsers = useMemo(() => {
-    // console.log("filteredUsers");
     return typeof filterCountry === "string" && filterCountry.length > 0
       ? users?.filter((user) =>
           user.location.country
@@ -53,36 +52,21 @@ function App() {
   }, [users, filterCountry]);
 
   const sortedUsers = useMemo(() => {
-    // console.log("sortedUsers");
-    // return sorting === SortBy.COUNTRY
-    //   ? [...(filteredUsers ?? [])].sort((a, b) =>
-    //       a.location.country.localeCompare(b.location.country)
-    //     )
-    //   : filteredUsers;
+    if (sorting === SortBy.NONE) return filteredUsers;
 
-    if (sorting === SortBy.COUNTRY) {
-      return [...(filteredUsers ?? [])].sort((a, b) =>
-        a.location.country.localeCompare(b.location.country)
-      );
-    }
+    const compareProperties: Record<string, (user: User) => any> = {
+      [SortBy.COUNTRY]: (user) => user.location.country,
+      [SortBy.NAME]: (user) => user.name.first,
+      [SortBy.LAST]: (user) => user.name.last,
+    };
 
-    if (sorting === SortBy.NAME) {
-      return [...(filteredUsers ?? [])].sort((a, b) =>
-        a.name.first.localeCompare(b.name.first)
-      );
-    }
-
-    if (sorting === SortBy.LAST) {
-      return [...(filteredUsers ?? [])].sort((a, b) =>
-        a.name.last.localeCompare(b.name.last)
-      );
-    }
-
-    return filteredUsers;
+    return filteredUsers.sort((a, b) => {
+      const extractProperty = compareProperties[sorting];
+      return extractProperty(a).localeCompare(extractProperty(b));
+    });
   }, [filteredUsers, sorting]);
 
   const handleChangeSort = (sort: SortBy) => {
-    // console.log(sort);
     setSorting(sort);
   };
 
