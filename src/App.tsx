@@ -4,8 +4,8 @@ import { User } from "./types/types";
 import UsersList from "./components/UsersList";
 
 function App() {
-  const [users, setUsers] = useState<User[] | undefined>(undefined);
-  const [rowColors, setRowColors] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [showColors, setShowColors] = useState(false);
   const [reloadUsers, setReloadUsers] = useState(false);
   const [initialState, setInitialState] = useState<User[] | undefined>(
     undefined
@@ -26,7 +26,7 @@ function App() {
   }, [reloadUsers]);
 
   const handleColor = () => {
-    setRowColors(!rowColors);
+    setShowColors(!showColors);
   };
 
   const handleDeleteUser = (index: string) => {
@@ -68,7 +68,7 @@ function App() {
     <main className="App">
       <h1>Prueba técnica</h1>
       <p>Agregar Sonner para notificaciones toast</p>
-      <div className="controls">
+      <header className="controls">
         <button onClick={handleColor}>Colorear filas</button>
         <button onClick={handleCountryOrder}>
           {clicked.current ? "No ordenar por país" : "Ordenar por país"}
@@ -81,8 +81,10 @@ function App() {
           placeholder="Filtrar por país"
           id="country-filter"
         />
-      </div>
-      <UsersList users={users} />
+      </header>
+      <main>
+        <UsersList showColors={showColors} users={users} />
+      </main>
     </main>
   );
 }
