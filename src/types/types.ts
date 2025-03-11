@@ -27,3 +27,10 @@ export interface User {
   picture: UserPicture;
   location: UserLocation;
 }
+
+export enum SortBy {
+  NONE = "none",
+  NAME = "name",
+  LAST = "last",
+  COUNTRY = "country",
+}
