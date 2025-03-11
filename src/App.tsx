@@ -1,19 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { User } from "./types/types";
 import UsersList from "./components/UsersList";
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
+  const originalUsers = useRef<User[]>([]);
   const [showColors, setShowColors] = useState(false);
   const [sortedCountries, setSortedCountries] = useState(false);
-  const originalUsers = useRef<User[]>([]);
+  const [filterCountry, setFilterCountry] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("https://randomuser.me/api/?results=100")
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data.results);
         setUsers(data.results);
         originalUsers.current = data.results;
       })
@@ -21,6 +21,15 @@ function App() {
         console.error(err);
       });
   }, []);
+
+  const filteredUsers =
+    typeof filterCountry === "string" && filterCountry.length > 0
+      ? users?.filter((user) =>
+          user.location.country
+            .toLowerCase()
+            .includes(filterCountry.toLowerCase())
+        )
+      : users;
 
   const handleColor = () => {
     setShowColors(!showColors);
@@ -35,23 +44,32 @@ function App() {
     setUsers(originalUsers.current);
   };
 
-  const handleInputFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toLowerCase();
-    const filteredUsers = users?.filter((item) =>
-      item.location.country.toLowerCase().includes(value)
-    );
-    setUsers(filteredUsers ?? []);
-  };
+  // const handleInputFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value.toLowerCase();
+  //   setFilterCountry(value);
+  //   const filteredCountries = filterCountry
+  //     ? users?.filter((item) =>
+  //         item.location.country.toLowerCase().includes(value)
+  //       )
+  //     : users;
+
+  //   setUsers(filteredCountries);
+
+  // const filteredUsers = users?.filter((item) =>
+  //   item.location.country.toLowerCase().includes(value)
+  // );
+  // setUsers(filteredUsers ?? []);
+  //};
 
   const handleCountryOrder = () => {
     setSortedCountries((prevState) => !prevState);
   };
 
   const rankedCountries = sortedCountries
-    ? [...(users ?? [])].sort((a, b) =>
+    ? [...(filteredUsers ?? [])].sort((a, b) =>
         a.location.country.localeCompare(b.location.country)
       )
-    : users;
+    : filteredUsers;
 
   return (
     <main className="App">
@@ -64,7 +82,9 @@ function App() {
         </button>
         <button onClick={handleReset}>Resetear estado</button>
         <input
-          onChange={handleInputFilter}
+          onChange={(e) => {
+            setFilterCountry(e.target.value);
+          }}
           name="country-filter"
           type="text"
           placeholder="Filtrar por país"
