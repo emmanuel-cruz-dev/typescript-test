@@ -9,6 +9,8 @@ function App() {
   const [sorting, setSorting] = useState<SortBy>(SortBy.NONE);
   const [filterCountry, setFilterCountry] = useState<string | null>(null);
 
+  const [loading, setLoading] = useState(false);
+
   const originalUsers = useRef<User[]>([]);
 
   const handleColor = () => {
@@ -35,7 +37,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("https://randomuser.me/api/?results=100")
+    fetch("https://randomuser.me/api/?results=10")
       .then((res) => res.json())
       .then((data) => {
         setUsers(data.results);
