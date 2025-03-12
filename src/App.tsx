@@ -10,6 +10,7 @@ function App() {
   const [filterCountry, setFilterCountry] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const originalUsers = useRef<User[]>([]);
 
@@ -37,14 +38,24 @@ function App() {
   };
 
   useEffect(() => {
+    setLoading(true);
+    setError(false);
+
     fetch("https://randomuser.me/api/?results=10")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Error en la petición.");
+        return res.json();
+      })
       .then((data) => {
         setUsers(data.results);
         originalUsers.current = data.results;
       })
       .catch((err) => {
+        setError(err);
         console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -95,12 +106,17 @@ function App() {
         />
       </header>
       <main>
-        <UsersList
-          changeSorting={handleChangeSort}
-          deleteUser={handleDeleteUser}
-          showColors={showColors}
-          users={sortedUsers}
-        />
+        {loading && <strong>Cargando... </strong>}
+        {!loading && error && <p>Ha habido un error.</p>}
+        {!loading && !error && users.length === 0 && <p>No hay usuarios.</p>}
+        {!loading && !error && users.length > 0 && (
+          <UsersList
+            changeSorting={handleChangeSort}
+            deleteUser={handleDeleteUser}
+            showColors={showColors}
+            users={sortedUsers}
+          />
+        )}
       </main>
     </main>
   );
