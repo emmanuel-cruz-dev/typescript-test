@@ -16,8 +16,54 @@ export interface Info {
   version: string;
 }
 
-export interface UserLocation {
+export interface User {
+  gender: Gender;
+  name: Name;
+  location: Location;
+  email: string;
+  login: Login;
+  dob: Dob;
+  registered: Dob;
+  phone: string;
+  cell: string;
+  id: ID;
+  picture: Picture;
+  nat: string;
+}
+
+export interface Dob {
+  date: Date;
+  age: number;
+}
+
+export enum Gender {
+  Female = "female",
+  Male = "male",
+}
+
+export interface Location {
+  street: Street;
+  city: string;
+  state: string;
   country: string;
+  postcode: number | string;
+  coordinate: Coordinates;
+  timezone: Timezone;
+}
+
+export interface Street {
+  number: number;
+  name: string;
+}
+
+export interface Coordinates {
+  latitude: string;
+  longitude: string;
+}
+
+export interface Timezone {
+  offset: string;
+  description: string;
 }
 
 export interface UserPicture {
@@ -35,15 +81,6 @@ export interface UserName {
 export interface ID {
   name: string;
   value: null | string;
-}
-
-export interface User {
-  cell: string;
-  email: string;
-  id: ID;
-  name: UserName;
-  picture: UserPicture;
-  location: UserLocation;
 }
 
 export enum SortBy {
