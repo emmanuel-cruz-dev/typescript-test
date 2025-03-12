@@ -50,7 +50,7 @@ function App() {
         return res.json();
       })
       .then((data) => {
-        setUsers(data.results);
+        setUsers((prevUsers) => prevUsers.concat(data.results));
         originalUsers.current = data.results;
       })
       .catch((err) => {
@@ -109,10 +109,7 @@ function App() {
         />
       </header>
       <main>
-        {loading && <strong>Cargando... </strong>}
-        {!loading && error && <p>Ha habido un error.</p>}
-        {!loading && !error && users.length === 0 && <p>No hay usuarios.</p>}
-        {!loading && !error && users.length > 0 && (
+        {users.length > 0 && (
           <UsersList
             changeSorting={handleChangeSort}
             deleteUser={handleDeleteUser}
@@ -120,6 +117,10 @@ function App() {
             users={sortedUsers}
           />
         )}
+        {loading && <strong>Cargando... </strong>}
+        {!loading && error && <p>Ha habido un error.</p>}
+        {!loading && !error && users.length === 0 && <p>No hay usuarios.</p>}
+
         {!loading && !error && (
           <button onClick={() => setCurrentPage(currentPage + 1)}>
             Cargar más resultados
