@@ -3,6 +3,17 @@ import "./App.css";
 import { SortBy, type User } from "./types/types";
 import UsersList from "./components/UsersList";
 
+const fetchUsers = async (page: number) => {
+  return await fetch(
+    `https://randomuser.me/api/?page=${page}&results=10&seed=emmadev`
+  )
+    .then(async (res) => {
+      if (!res.ok) throw new Error("Error en la petición.");
+      return await res.json();
+    })
+    .then((res) => res.results);
+};
+
 function App() {
   const [users, setUsers] = useState<User[]>([]);
   const [showColors, setShowColors] = useState(false);
@@ -42,16 +53,10 @@ function App() {
     setLoading(true);
     setError(false);
 
-    fetch(
-      `https://randomuser.me/api/?page=${currentPage}&results=10&seed=emmadev`
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Error en la petición.");
-        return res.json();
-      })
-      .then((data) => {
+    fetchUsers(currentPage)
+      .then((users) => {
         setUsers((prevUsers) => {
-          const newUsers = prevUsers.concat(data.results);
+          const newUsers = prevUsers.concat(users);
           originalUsers.current = newUsers;
           return newUsers;
         });
