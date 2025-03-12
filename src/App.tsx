@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
-import { SortBy, User } from "./types/types";
+import { SortBy, type User } from "./types/types";
 import UsersList from "./components/UsersList";
 
 function App() {
@@ -65,7 +65,7 @@ function App() {
       [SortBy.LAST]: (user) => user.name.last,
     };
 
-    return filteredUsers.sort((a, b) => {
+    return filteredUsers.toSorted((a, b) => {
       const extractProperty = compareProperties[sorting];
       return extractProperty(a).localeCompare(extractProperty(b));
     });
