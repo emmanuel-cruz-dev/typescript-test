@@ -11,6 +11,7 @@ function App() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const originalUsers = useRef<User[]>([]);
 
@@ -41,7 +42,9 @@ function App() {
     setLoading(true);
     setError(false);
 
-    fetch("https://randomuser.me/api/?results=10")
+    fetch(
+      `https://randomuser.me/api/?page=${currentPage}&results=10&seed=emmadev`
+    )
       .then((res) => {
         if (!res.ok) throw new Error("Error en la petición.");
         return res.json();
@@ -57,7 +60,7 @@ function App() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [currentPage]);
 
   const filteredUsers = useMemo(() => {
     return filterCountry != null && filterCountry.length > 0
@@ -116,6 +119,11 @@ function App() {
             showColors={showColors}
             users={sortedUsers}
           />
+        )}
+        {!loading && !error && (
+          <button onClick={() => setCurrentPage(currentPage + 1)}>
+            Cargar más resultados
+          </button>
         )}
       </main>
     </main>
