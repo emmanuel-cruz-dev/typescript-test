@@ -66,16 +66,36 @@ export interface Timezone {
   description: string;
 }
 
-export interface UserPicture {
+export interface Login {
+  uuid: string;
+  username: string;
+  password: string;
+  salt: string;
+  md5: string;
+  sha1: string;
+  sha256: string;
+}
+
+export interface Picture {
   large: string;
   medium: string;
   thumbnail: string;
 }
 
-export interface UserName {
-  title: string;
+export interface Name {
+  title: Title;
   first: string;
   last: string;
+}
+
+export enum Title {
+  MS = "Ms",
+  Madame = "Madame",
+  Mademoiselle = "Mademoiselle",
+  Miss = "Miss",
+  Monsieur = "Monsieur",
+  Mr = "Mr",
+  Mrs = "Mrs",
 }
 
 export interface ID {
