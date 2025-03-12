@@ -50,8 +50,11 @@ function App() {
         return res.json();
       })
       .then((data) => {
-        setUsers((prevUsers) => prevUsers.concat(data.results));
-        originalUsers.current = data.results;
+        setUsers((prevUsers) => {
+          const newUsers = prevUsers.concat(data.results);
+          originalUsers.current = newUsers;
+          return newUsers;
+        });
       })
       .catch((err) => {
         setError(err);
@@ -118,9 +121,8 @@ function App() {
           />
         )}
         {loading && <strong>Cargando... </strong>}
-        {!loading && error && <p>Ha habido un error.</p>}
-        {!loading && !error && users.length === 0 && <p>No hay usuarios.</p>}
-
+        {error && <p>Ha habido un error.</p>}
+        {!error && users.length === 0 && <p>No hay usuarios.</p>}
         {!loading && !error && (
           <button onClick={() => setCurrentPage(currentPage + 1)}>
             Cargar más resultados
