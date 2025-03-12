@@ -129,7 +129,10 @@ function App() {
         {error && <p>Ha habido un error.</p>}
         {!error && users.length === 0 && <p>No hay usuarios.</p>}
         {!loading && !error && (
-          <button onClick={() => setCurrentPage(currentPage + 1)}>
+          <button
+            style={{ marginTop: "1rem" }}
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
             Cargar más resultados
           </button>
         )}
