@@ -13,6 +13,7 @@ export const useUsers = () => {
         fetchUsers({ pageParam: pageParam as number }),
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       initialPageParam: 1,
+      refetchOnWindowFocus: false,
     });
 
   return {

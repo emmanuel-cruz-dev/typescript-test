@@ -3,6 +3,7 @@ import "./App.css";
 import { SortBy, type User } from "./types/types";
 import UsersList from "./components/UsersList";
 import { useUsers } from "./hooks/useUsers";
+import Results from "./components/Results";
 
 function App() {
   const { isLoading, isError, users, refetch, fetchNextPage, hasNextPage } =
@@ -86,6 +87,7 @@ function App() {
   return (
     <main className="App">
       <h1>Prueba técnica</h1>
+      <Results />
       <header className="controls">
         <button onClick={handleColor}>Colorear filas</button>
         <button onClick={handleCountryOrder}>
