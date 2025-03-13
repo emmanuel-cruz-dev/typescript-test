@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import "./App.css";
 import { SortBy, type User } from "./types/types";
 import UsersList from "./components/UsersList";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchUsers = async (page: number) => {
   return await fetch(
@@ -15,16 +16,25 @@ const fetchUsers = async (page: number) => {
 };
 
 function App() {
-  const [users, setUsers] = useState<User[]>([]);
+  const {
+    isLoading,
+    isError,
+    data: users = [],
+    refetch,
+  } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => fetchUsers(1),
+  });
+  // const [users, setUsers] = useState<User[]>([]);
   const [showColors, setShowColors] = useState(false);
   const [sorting, setSorting] = useState<SortBy>(SortBy.NONE);
   const [filterCountry, setFilterCountry] = useState<string | null>(null);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const originalUsers = useRef<User[]>([]);
+  // const originalUsers = useRef<User[]>([]);
 
   const handleColor = () => {
     setShowColors(!showColors);
@@ -36,39 +46,42 @@ function App() {
     setSorting(newSortingValue);
   };
 
-  const handleReset = () => {
-    setUsers(originalUsers.current);
+  const handleReset = async () => {
+    await refetch();
+    // setUsers(originalUsers.current);
   };
 
   const handleDeleteUser = (index: string) => {
-    const newUsers = users?.filter((item) => item.cell !== index);
-    setUsers(newUsers);
+    console.log(index);
+
+    // const newUsers = users?.filter((item) => item.cell !== index);
+    // setUsers(newUsers);
   };
 
   const handleChangeSort = (sort: SortBy) => {
     setSorting(sort);
   };
 
-  useEffect(() => {
-    setLoading(true);
-    setError(false);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setError(false);
 
-    fetchUsers(currentPage)
-      .then((users) => {
-        setUsers((prevUsers) => {
-          const newUsers = prevUsers.concat(users);
-          originalUsers.current = newUsers;
-          return newUsers;
-        });
-      })
-      .catch((err) => {
-        setError(err);
-        console.error(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [currentPage]);
+  //   fetchUsers(currentPage)
+  //     .then((users) => {
+  //       setUsers((prevUsers) => {
+  //         const newUsers = prevUsers.concat(users);
+  //         originalUsers.current = newUsers;
+  //         return newUsers;
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       setError(err);
+  //       console.error(err);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // }, [currentPage]);
 
   const filteredUsers = useMemo(() => {
     return filterCountry != null && filterCountry.length > 0
@@ -125,10 +138,12 @@ function App() {
             users={sortedUsers}
           />
         )}
-        {loading && <strong>Cargando... </strong>}
-        {error && <p>Ha habido un error.</p>}
-        {!error && users.length === 0 && <p>No hay usuarios.</p>}
-        {!loading && !error && (
+        {isLoading && <strong>Cargando... </strong>}
+        {isError && <p>Ha habido un error.</p>}
+        {!isLoading && !isError && users.length === 0 && (
+          <p>No hay usuarios.</p>
+        )}
+        {!isLoading && !isError && (
           <button
             style={{ marginTop: "1rem" }}
             onClick={() => setCurrentPage(currentPage + 1)}
