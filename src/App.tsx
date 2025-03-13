@@ -2,48 +2,14 @@ import { useMemo, useState } from "react";
 import "./App.css";
 import { SortBy, type User } from "./types/types";
 import UsersList from "./components/UsersList";
-import { useInfiniteQuery } from "@tanstack/react-query";
-
-const fetchUsers = async ({ pageParam = 1 }: { pageParam?: number }) => {
-  return await fetch(
-    `https://randomuser.me/api/?page=${pageParam}&results=10&seed=emmadev`
-  )
-    .then(async (res) => {
-      if (!res.ok) throw new Error("Error en la petición.");
-      return await res.json();
-    })
-    .then((res) => {
-      const nextCursor = Number(res.info.page) + 1;
-      return {
-        users: res.results,
-        nextCursor,
-      };
-    });
-};
+import { useUsers } from "./hooks/useUsers";
 
 function App() {
-  const { isLoading, isError, data, refetch, fetchNextPage, hasNextPage } =
-    useInfiniteQuery<{
-      nextCursor: number;
-      users: User[];
-    }>({
-      queryKey: ["users"],
-      queryFn: fetchUsers,
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    });
-
-  const users: User[] = data?.pages?.flatMap((page) => page.users) ?? [];
-
-  // const [users, setUsers] = useState<User[]>([]);
+  const { isLoading, isError, users, refetch, fetchNextPage, hasNextPage } =
+    useUsers();
   const [showColors, setShowColors] = useState(false);
   const [sorting, setSorting] = useState<SortBy>(SortBy.NONE);
   const [filterCountry, setFilterCountry] = useState<string | null>(null);
-
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(false);
-  // const [currentPage, setCurrentPage] = useState(1);
-
-  // const originalUsers = useRef<User[]>([]);
 
   const handleColor = () => {
     setShowColors(!showColors);
@@ -152,7 +118,7 @@ function App() {
         {!isLoading && !isError && users.length === 0 && (
           <p>No hay usuarios.</p>
         )}
-        {!isLoading && !isError && (
+        {!isLoading && !isError && hasNextPage == true && (
           <button
             style={{ marginTop: "1rem" }}
             onClick={() => {
@@ -161,6 +127,10 @@ function App() {
           >
             Cargar más resultados
           </button>
+        )}
+
+        {!isLoading && !isError && hasNextPage == false && (
+          <strong>No hay más resultados.</strong>
         )}
       </main>
     </main>
