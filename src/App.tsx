@@ -2,29 +2,38 @@ import { useMemo, useState } from "react";
 import "./App.css";
 import { SortBy, type User } from "./types/types";
 import UsersList from "./components/UsersList";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
-const fetchUsers = async (page: number) => {
+const fetchUsers = async ({ pageParam = 1 }: { pageParam?: number }) => {
   return await fetch(
-    `https://randomuser.me/api/?page=${page}&results=10&seed=emmadev`
+    `https://randomuser.me/api/?page=${pageParam}&results=10&seed=emmadev`
   )
     .then(async (res) => {
       if (!res.ok) throw new Error("Error en la petición.");
       return await res.json();
     })
-    .then((res) => res.results);
+    .then((res) => {
+      const nextCursor = Number(res.info.page) + 1;
+      return {
+        users: res.results,
+        nextCursor,
+      };
+    });
 };
 
 function App() {
-  const {
-    isLoading,
-    isError,
-    data: users = [],
-    refetch,
-  } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: () => fetchUsers(1),
-  });
+  const { isLoading, isError, data, refetch, fetchNextPage, hasNextPage } =
+    useInfiniteQuery<{
+      nextCursor: number;
+      users: User[];
+    }>({
+      queryKey: ["users"],
+      queryFn: fetchUsers,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    });
+
+  const users: User[] = data?.pages?.flatMap((page) => page.users) ?? [];
+
   // const [users, setUsers] = useState<User[]>([]);
   const [showColors, setShowColors] = useState(false);
   const [sorting, setSorting] = useState<SortBy>(SortBy.NONE);
@@ -32,7 +41,7 @@ function App() {
 
   // const [loading, setLoading] = useState(false);
   // const [error, setError] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
 
   // const originalUsers = useRef<User[]>([]);
 
@@ -146,7 +155,9 @@ function App() {
         {!isLoading && !isError && (
           <button
             style={{ marginTop: "1rem" }}
-            onClick={() => setCurrentPage(currentPage + 1)}
+            onClick={() => {
+              void fetchNextPage();
+            }}
           >
             Cargar más resultados
           </button>
